@@ -1,0 +1,40 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: Creates mandatory role for all Jisc customer self-managed AWS management accounts to allow Jisc to manage billing and support only
+
+Parameters:
+  JcsAccountId:
+    Type: String
+
+Resources:
+  JiscBillingAdminRole:
+    Type: AWS::IAM::Role
+    Properties:
+      Description: Mandatory role for all Jisc customer self-managed AWS management accounts to allow Jisc to manage billing and support only
+      RoleName: sts-Jisc-BillingSupport-Role
+      Path: /
+      ManagedPolicyArns:
+        - "arn:aws:iam::aws:policy/job-function/Billing"
+        - "arn:aws:iam::aws:policy/job-function/SupportUser"
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement: 
+          - Effect: "Allow"
+            Principal: 
+              AWS: 
+                - !Sub "arn:aws:iam::${JcsAccountId}:root"
+            Action: 
+              - "sts:AssumeRole"
+
+      Tags:
+        - Key: "jisc:created-by"
+          Value: "jisc"
+        - Key: "jisc:mandatory"
+          Value: "true"
+
+
+
+      
+
+
+      
+
